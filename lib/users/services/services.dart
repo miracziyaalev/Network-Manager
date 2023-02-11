@@ -8,6 +8,7 @@ import 'package:reqres/users/model/users_model.dart';
 abstract class IUserServices {
   Future<List<UsersModel>?> getUserList();
   Future<List<DetailModel>?> fetchDetail(int postId);
+  Future<bool> addItemToService(UsersModel postModel);
 }
 
 class UserServices implements IUserServices {
@@ -51,6 +52,18 @@ class UserServices implements IUserServices {
       _ShowDebug()._showDioDebugError(error);
     }
     return null;
+  }
+
+  @override
+  Future<bool> addItemToService(UsersModel postModel) async {
+    try {
+      final response = await _reqresManager.post(_RequestPaths.posts.name, data: postModel);
+
+      return response.statusCode == HttpStatus.created;
+    } on DioError catch (exception) {
+      _ShowDebug()._showDioDebugError(exception);
+    }
+    return false;
   }
 }
 
